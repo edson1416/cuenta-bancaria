@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TipoCuentaMapper.class})
 public interface CuentaBancariaMapper {
 
     CuentaBancariaMapper INSTANCE = Mappers.getMapper(CuentaBancariaMapper.class);

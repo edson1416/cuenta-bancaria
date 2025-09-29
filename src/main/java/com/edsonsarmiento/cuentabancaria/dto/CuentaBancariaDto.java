@@ -13,10 +13,11 @@ public class CuentaBancariaDto {
 
     private double capital;
 
-    private String tipoCuenta;
-
     private Date fechaApertura;
 
     private Boolean activa ;
+
+    private TipoCuentaDto tipoCuenta;
+
 
 }

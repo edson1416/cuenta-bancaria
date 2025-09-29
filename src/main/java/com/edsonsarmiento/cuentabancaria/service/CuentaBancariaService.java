@@ -5,11 +5,13 @@ import com.edsonsarmiento.cuentabancaria.dto.ClienteDto;
 import com.edsonsarmiento.cuentabancaria.dto.CuentaBancariaDto;
 import com.edsonsarmiento.cuentabancaria.entity.Cliente;
 import com.edsonsarmiento.cuentabancaria.entity.CuentaBancaria;
+import com.edsonsarmiento.cuentabancaria.entity.TipoCuenta;
 import com.edsonsarmiento.cuentabancaria.mapper.AperturaCuentaMapper;
 import com.edsonsarmiento.cuentabancaria.mapper.ClienteMapper;
 import com.edsonsarmiento.cuentabancaria.mapper.CuentaBancariaMapper;
 import com.edsonsarmiento.cuentabancaria.repository.ClienteRepository;
 import com.edsonsarmiento.cuentabancaria.repository.CuentaBancariaRepository;
+import com.edsonsarmiento.cuentabancaria.repository.TipoCuentaRepository;
 import com.edsonsarmiento.cuentabancaria.service.interfaces.CuentaBancariaInterface;
 import com.edsonsarmiento.cuentabancaria.util.NumeroCuenta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class CuentaBancariaService implements CuentaBancariaInterface {
     private CuentaBancariaRepository cuentaBancariaRepository;
 
     @Autowired
+    private TipoCuentaRepository tipoCuentaRepository;
+
+    @Autowired
     private AperturaCuentaMapper  aperturaCuentaMapper;
 
     @Autowired
@@ -38,14 +43,16 @@ public class CuentaBancariaService implements CuentaBancariaInterface {
     @Override
     public ClienteDto aperturaCuentaBancaria(AperturaCuentaBancariaDto data) {
 
+        TipoCuenta tipoCuenta = tipoCuentaRepository.findById(data.getIdTipoCuenta()).orElseThrow(()-> new RuntimeException("Tipo de cuenta no encontrado"));
         Cliente cliente = aperturaCuentaMapper.aperturaDtoToCliente(data);
         Cliente nuevoCliente = clienteRepository.save(cliente);
 
         CuentaBancaria cuenta = aperturaCuentaMapper.aperturaDtoToCuentaBancaria(data);
 
         NumeroCuenta obj = new NumeroCuenta();
-        int numeroCuenta = obj.generarNumeroCuenta();
-        cuenta.setNumeroCuenta(Integer.toString(numeroCuenta));
+        String numeroCuenta = obj.generarNumeroCuenta();
+        cuenta.setNumeroCuenta(numeroCuenta);
+        cuenta.setTipoCuenta(tipoCuenta);
         cuenta.setCliente(nuevoCliente);
 
         cuentaBancariaRepository.save(cuenta);
@@ -68,8 +75,9 @@ public class CuentaBancariaService implements CuentaBancariaInterface {
         if (cuentaBancariaRepository.existsByNumeroCuentaAndIdNot(data.getNumeroCuenta(), cuenta.getId())) {
             throw new RuntimeException("Este numero de cuenta ya existente");
         }else {
+            TipoCuenta tipoCuenta = tipoCuentaRepository.findById(data.getTipoCuenta().getId()).orElseThrow(()-> new RuntimeException("Tipo de cuenta no encontrado"));
             cuenta.setNumeroCuenta(data.getNumeroCuenta());
-            cuenta.setTipoCuenta(data.getTipoCuenta());
+            cuenta.setTipoCuenta(tipoCuenta);
             cuenta.setActiva(data.getActiva());
             cuentaBancariaRepository.save(cuenta);
 

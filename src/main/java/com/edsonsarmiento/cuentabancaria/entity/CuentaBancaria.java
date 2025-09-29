@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,13 +21,14 @@ public class CuentaBancaria {
 
     private double capital;
 
-    @Column()
-    private String tipoCuenta;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaApertura;
 
     private Boolean activa = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_cuenta", nullable = false)
+    private TipoCuenta tipoCuenta;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", nullable = false)

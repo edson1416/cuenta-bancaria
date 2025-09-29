@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.util.Date;
 
@@ -23,7 +24,10 @@ public class AperturaCuentaBancariaDto {
     private String email;
 
     private double capital;
-    private String tipoCuenta;
+
+    @NotNull(message = "El campo id_tipo_cuenta no debe ser nulo")
+    private Long idTipoCuenta;
+
     private Date fechaApertura;
     private Boolean activa ;
 }
