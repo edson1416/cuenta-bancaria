@@ -1,6 +1,8 @@
 package com.edsonsarmiento.cuentabancaria.service;
 
 import com.edsonsarmiento.cuentabancaria.dto.TipoCuentaDto;
+import com.edsonsarmiento.cuentabancaria.entity.TipoCuenta;
+import com.edsonsarmiento.cuentabancaria.mapper.TipoCuentaMapper;
 import com.edsonsarmiento.cuentabancaria.repository.TipoCuentaRepository;
 import com.edsonsarmiento.cuentabancaria.service.interfaces.TipoCuentaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,13 @@ public class TipoCuentaService implements TipoCuentaInterface {
     @Autowired
     private TipoCuentaRepository tipoCuentaRepository;
 
+    @Autowired
+    private TipoCuentaMapper tipoCuentaMapper;
+
     @Override
     public List<TipoCuentaDto> listTipoCuentas() {
-        return List.of();
+        List<TipoCuenta>  tipoCuentas = tipoCuentaRepository.findAll();
+        return tipoCuentaMapper.listEntityToListDto(tipoCuentas);
     }
 
     @Override
